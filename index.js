@@ -15,7 +15,7 @@ async function getSumOfDiameter(id) {
     // Stock the data in a variable. Makes further treatment easier.
     let response = await fetch(`https://swapi.dev/api/films/${id}`);
 
-    // Transform the data in JSON-format. Stock the JSON-object in a variable called.
+    // Transform the data in JSON-format.
     // Decide to stock only useful property with "array destructuring".
     const { planets } = await response.json();
 
