@@ -36,6 +36,7 @@ async function getSumOfDiameter(id) {
 
     // Use of reduce method to get the sum of all diameters
     console.log(result.reduce((a, b) => a + b, 0));
+    console.log('ENJOY');
 
   } catch (error) {
     console.error(error);
@@ -45,10 +46,11 @@ async function getSumOfDiameter(id) {
 // Call function getSumOfDiameter
 // Provide an error message for bad request
 if (isNaN(id)) {
-  console.error('Unexepected arguments. Please provide a number.');
+  console.error('I searched a Star Wars movie but I could not find anything. Could you please check your request and provide a number?  Thank you!');
 } else if (id < 1 || id > 6) {
-  console.error('No Star Wars movie found for this Id. Please provide a number from 1 to 6.');
+  console.error('No Star Wars movie found for this Id. Sorry. Please provide a number from 1 to 6.');
 } else {
+  console.log('Calculating...');
   getSumOfDiameter(id);
 };
 
