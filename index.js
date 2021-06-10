@@ -1,5 +1,8 @@
-/* Installed node module 'node-fetch' to get data from the Star Wars API */
+// Installed node module 'node-fetch' to get data from the Star Wars API
 const fetch = require('node-fetch');
+
+// Get the argument of the command line instruction
+const id = process.argv[2];
 
 /* 
 The use of Async / Await gives me the possibility to write a code easier to read
@@ -7,48 +10,45 @@ The use of Async / Await gives me the possibility to write a code easier to read
 The "try...catch" instruction allows me to alert the user in case of error during the process.
 */
 
-// Get the argument of the command line instruction
-const id = process.argv[2];
+async function getSumOfDiameter(id) {
+  try {
+    // Stock the data in a variable. Makes further treatment easier.
+    let response = await fetch(`https://swapi.dev/api/films/${id}`);
 
-// Provide an error message for bad request
-if (id < 1 || id > 6) {
-  console.log('No Star Wars movie found for this Id. Please provide a number from 1 to 6.')
+    // Transform the data in JSON-format. Stock the JSON-object in a variable called.
+    // Decide to stock only useful property with "array destructuring".
+    const { planets } = await response.json();
 
-} else {
+    // Create a variable to stock all the future results of my filter. 
+    let result = [];
 
-  async function getSumOfDiameter(id) {
-    try {
-      // Stock the data in a variable. Makes further treatment easier.
-      let response = await fetch(`https://swapi.dev/api/films/${id}`);
+    // The "for loop" allows to fetch all the planets of a movie and apply data treatment.
+    for (let i = 0; i < planets.length; i++) {
+      response = await fetch(planets[i]);
+      const planetData = await response.json();
+      const { terrain, surface_water, diameter } = planetData;
 
-      // Transform the data in JSON-format. Stock the JSON-object in a variable called "movieData"
-      let movieData = await response.json();
+      // Push in "result" the diameter of the planets that correspond to my conditions
+      terrain.includes('mountains') && surface_water != 'unknown' && surface_water != '0'
+        ? result.push(parseInt(diameter))
+        : null;
+    };
 
-      // Decide to stock only useful property with "array destructuring".
-      let { planets } = movieData;
+    // Use of reduce method to get the sum of all diameters
+    console.log(result.reduce((a, b) => a + b, 0));
 
-      // Create a variable to stock all the future results of my filter. 
-      let result = [];
-
-      // The "for loop" allows to fetch all the planets of a movie and apply data treatment.
-      for (let i = 0; i < planets.length; i++) {
-        response = await fetch(planets[i]);
-        let planetData = await response.json();
-        let { terrain, surface_water, diameter } = planetData;
-
-        // Push in "result" the diameter of the planets that correspond to my conditions
-        terrain.includes('mountains') && surface_water != 'unknown' && surface_water != '0'
-          ? result.push(parseInt(diameter))
-          : null;
-      };
-
-      // Use of reduce method to get the sum of all diameters
-      console.log(result.reduce((a, b) => a + b, 0));
-
-    } catch (error) {
-      console.error(error);
-    }
+  } catch (error) {
+    console.error(error);
   }
+};
+
+// Call function getSumOfDiameter
+// Provide an error message for bad request
+if (isNaN(id)) {
+  console.error('Unexepected arguments. Please provide a number.');
+} else if (id < 1 || id > 6) {
+  console.error('No Star Wars movie found for this Id. Please provide a number from 1 to 6.');
+} else {
   getSumOfDiameter(id);
 };
 
